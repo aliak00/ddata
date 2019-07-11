@@ -1,0 +1,12 @@
+{
+    "name": "jwt",
+    "targetType": "library",
+    "targetPath": "../bin",
+    "dependencies": {
+        "ddata:common": "*",
+        "openssl": "*"
+    },
+    "lflags-osx": [
+        "-L/usr/local/opt/openssl@1.1/lib"
+    ]
+}

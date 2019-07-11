@@ -1,0 +1,32 @@
+{
+    "name": "ddata",
+    "authors": [
+        "Ali Akhtarzada"
+    ],
+    "description": "Data library for D",
+    "copyright": "Copyright © 2017, Ali Akhtarzada",
+    "license": "MIT",
+    "targetPath": "bin",
+    "dependencies": {
+        "ddata:jwt": "*"
+    },
+    "subPackages": [
+        "./jwt/",
+        "./common/"
+    ],
+    "configurations": [
+        {
+            "name": "unittest",
+            "sourcePaths": [
+                "./jwt/",
+                "./common/"
+            ],
+            "dependencies": {
+                "silly": "*"
+            },
+            "importPaths": [
+                "."
+            ]
+        }
+    ]
+}
