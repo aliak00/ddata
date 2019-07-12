@@ -10,6 +10,21 @@ import deimos.openssl.err;
 
 import ddata.jwt.algorithm;
 
+// These functions are added to the bindings post version 2.0, but vibe-d seems to
+// import version ~>1.0 of the bindings. So you get compile errors when including
+// in a vibe project. This is for that.
+static if (!__traits(compiles, {
+    auto ctx = HMAC_CTX_new;
+    HMAC_CTX_reset(ctx);
+    HMAC_CTX_free(ctx);
+})) {
+    extern(C) nothrow {
+        HMAC_CTX * HMAC_CTX_new();
+        void HMAC_CTX_free(HMAC_CTX *ctx);
+        void HMAC_CTX_reset(HMAC_CTX * ctx);
+    }
+}
+
 private string getLastError() @trusted {
     import std.string: toStringz;
     auto buffer = new char[120];
