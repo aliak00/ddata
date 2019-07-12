@@ -15,3 +15,4 @@ ddata-test-*
 *.lst
 bin
 dub.selections.json
+.DS_Store
