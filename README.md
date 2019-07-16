@@ -7,7 +7,9 @@ Intended to store a bunch of data/network related utilities that are common for 
 Supported stuff so far:
 
 * jwt
-  * rsa256
-  * hs256
+  * rsa256 encoding
+  * hs256 encoding
+* crytpo
+  * aes128 encryption/decryption
 
 That's all for now folks.
