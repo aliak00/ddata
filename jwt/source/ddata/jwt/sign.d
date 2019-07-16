@@ -8,6 +8,7 @@ import deimos.openssl.hmac;
 import deimos.openssl.sha;
 import deimos.openssl.err;
 
+import ddata.common;
 import ddata.jwt.algorithm;
 
 // These functions are added to the bindings post version 2.0, but vibe-d seems to
@@ -23,14 +24,6 @@ static if (!__traits(compiles, {
         void HMAC_CTX_free(HMAC_CTX *ctx);
         void HMAC_CTX_reset(HMAC_CTX * ctx);
     }
-}
-
-private string getLastError() @trusted {
-    import std.string: toStringz;
-    auto buffer = new char[120];
-    buffer[] = '\0';
-    ERR_error_string(ERR_get_error, buffer.ptr);
-    return cast(string)buffer;
 }
 
 private string signHs(string message, string key, uint digestLength, const(EVP_MD)* evp) @trusted {

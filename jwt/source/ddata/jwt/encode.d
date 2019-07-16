@@ -6,11 +6,14 @@ import std.base64;
 import ddata.jwt.algorithm;
 import ddata.jwt.sign;
 
-string encode(const ref JSONValue payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
+/**
+    Encodes a jwt with the current payload and specified algorithm
+*/
+public string encode(const ref JSONValue payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
     return encode(cast(ubyte[]) payload.toString().dup, key, algorithm, header);
 }
 
-string encode(in ubyte[] payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
+private string encode(in ubyte[] payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
     if (header.type == JSONType.null_) {
         header = (JSONValue[string]).init;
     }

@@ -12,6 +12,7 @@
     },
     "subPackages": [
         "./jwt/",
+        "./crypto/",
         "./common/"
     ],
     "configurations": [
@@ -19,6 +20,7 @@
             "name": "unittest",
             "sourcePaths": [
                 "./jwt/",
+                "./crypto/",
                 "./common/"
             ],
             "dependencies": {

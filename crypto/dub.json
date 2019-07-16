@@ -1,5 +1,5 @@
 {
-    "name": "jwt",
+    "name": "crypto",
     "targetType": "library",
     "targetPath": "../bin",
     "dependencies": {
