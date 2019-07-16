@@ -11,6 +11,12 @@
                 "kind": "test",
                 "isDefault": true
             }
+        },
+        {
+            "label": "test-docker-posix",
+            "type": "shell",
+            "command": "docker build .",
+            "group": "test"
         }
     ]
 }

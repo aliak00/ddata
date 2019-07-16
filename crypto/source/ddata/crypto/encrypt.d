@@ -16,14 +16,14 @@ private void randomFill(ubyte[] buffer) @trusted {
     version (OSX) {
         arc4random_buf(buffer.ptr, buffer.length);
     } else version (Posix) {
-        import std.stdio: File;
+        import std.stdio: File, _IONBF;
         try {
             File urandom = File("/dev/urandom", "rb");
             urandom.setvbuf(null, _IONBF);
             scope(exit) urandom.close();
             buffer = urandom.rawRead(buffer);
         } catch (Exception ex) {
-            throw Exception("failed to get random bytes - %s".format(ex.msg));
+            throw new Exception("failed to get random bytes - %s".format(ex.msg));
         }
     } else {
         static assert(0, "Unsupported OS for secure random byte generation");
