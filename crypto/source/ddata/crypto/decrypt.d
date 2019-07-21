@@ -14,16 +14,24 @@ import ddata.crypto.algorithm;
     See_Also:
         `ddata.crypto.encrypt`
 */
-public string decrypt(ubyte[] data, string key, Algorithm algorithm = Algorithm.aes128) @safe {
+public string decrypt(const ubyte[] data, const string key, Algorithm algorithm = Algorithm.aes128) @safe {
     final switch (algorithm) {
     case Algorithm.aes128:
-        return decrypt(data, cast(ubyte[])key.dup, () @trusted { return EVP_aes_128_cbc(); }() ).idup;
+        return decrypt(data, cast(const ubyte[])key, () @trusted { return EVP_aes_128_cbc(); }() ).idup;
     }
 }
 
-private string decrypt(ubyte[] data, ubyte[] key, const(EVP_CIPHER)* cipher) @trusted {
-    ubyte[] iv = data[0 .. 16];
-    ubyte[] payload = data[16 .. $];
+/// Ditto
+public string decrypt(const string data, const string key, Algorithm algorithm = Algorithm.aes128) @safe {
+    final switch (algorithm) {
+    case Algorithm.aes128:
+        return decrypt(cast(immutable ubyte[])data, cast(const ubyte[])key, () @trusted { return EVP_aes_128_cbc(); }() ).idup;
+    }
+}
+
+private string decrypt(const ubyte[] data, const ubyte[] key, const(EVP_CIPHER)* cipher) @trusted {
+    const iv = data[0 .. 16];
+    const payload = data[16 .. $];
 
     auto ctx = EVP_CIPHER_CTX_new();
     if (ctx is null) {
@@ -60,9 +68,23 @@ unittest {
         .collectExceptionMsg;
     assert(msg.canFind("Failed to finalize evp contex"));
 
-    string password = "some random password";
-    string message = "this is a call to all you people how is this even happening";
-    auto encryptedMessage = encrypt(message, password);
-    auto decryptedMessage = decrypt(encryptedMessage, password);
+    const password = "some random password";
+    const message = "this is a call to all you people how is this even happening";
+    const encryptedMessage = encrypt(message, password);
+    const decryptedMessage = decrypt(encryptedMessage, password);
     assert(message == decryptedMessage);
+}
+
+
+@("Should be able to base64 an encryption and then decrypt")
+unittest {
+    import std.base64: Base64;
+    import ddata.crypto: encrypt;
+    const str = "0aecba4fe377338b94746e203b4718c4cfdb7629";
+    const password = "password";
+    const encrypted = str.encrypt(password, Algorithm.aes128);
+    const base64Encoded = Base64.encode(encrypted);
+    const base64Decoded = Base64.decode(base64Encoded);
+    const decrypted = base64Decoded.decrypt(password, Algorithm.aes128);
+    assert(str == decrypted);
 }
