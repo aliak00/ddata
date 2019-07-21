@@ -36,14 +36,14 @@ private void randomFill(ubyte[] buffer) @trusted {
     See_Also:
         `ddata.crypto.decrypt`
 */
-public string encrypt(string data, string key, Algorithm algorithm = Algorithm.aes128) @safe {
+public ubyte[] encrypt(string data, string key, Algorithm algorithm = Algorithm.aes128) @safe {
     final switch (algorithm) {
     case Algorithm.aes128:
         return encrypt(cast(ubyte[])data.dup, cast(ubyte[])key.dup, () @trusted { return EVP_aes_128_cbc(); }() );
     }
 }
 
-private string encrypt(ubyte[] data, ubyte[] key, const(EVP_CIPHER)* cipher) @trusted {
+private ubyte[] encrypt(ubyte[] data, ubyte[] key, const(EVP_CIPHER)* cipher) @trusted {
     auto ctx = EVP_CIPHER_CTX_new();
     if (ctx is null) {
         throw new Exception("Failed to create EVP cipher context - %s".format(getLastError));
@@ -76,7 +76,7 @@ private string encrypt(ubyte[] data, ubyte[] key, const(EVP_CIPHER)* cipher) @tr
     EVP_EncryptFinal(ctx, &buffer.ptr[updateLength], &finalLength);
 
     auto ret = iv ~ buffer[0 .. updateLength + finalLength];
-    return cast(string)ret;
+    return ret;
 }
 
 @("should encrypt and decrypt to same message")

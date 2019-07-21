@@ -14,10 +14,10 @@ import ddata.crypto.algorithm;
     See_Also:
         `ddata.crypto.encrypt`
 */
-public string decrypt(string data, string key, Algorithm algorithm = Algorithm.aes128) @safe {
+public string decrypt(ubyte[] data, string key, Algorithm algorithm = Algorithm.aes128) @safe {
     final switch (algorithm) {
     case Algorithm.aes128:
-        return decrypt(cast(ubyte[])data.dup, cast(ubyte[])key.dup, () @trusted { return EVP_aes_128_cbc(); }() ).idup;
+        return decrypt(data, cast(ubyte[])key.dup, () @trusted { return EVP_aes_128_cbc(); }() ).idup;
     }
 }
 
@@ -55,7 +55,7 @@ unittest {
     import std.algorithm: canFind;
     import ddata.crypto: encrypt;
 
-    auto msg = "76d3beec63f0dc9204c3a102d2d3db86200d57cf"
+    auto msg = (cast(ubyte[])"76d3beec63f0dc9204c3a102d2d3db86200d57cf")
         .decrypt("some-key", Algorithm.aes128)
         .collectExceptionMsg;
     assert(msg.canFind("Failed to finalize evp contex"));
