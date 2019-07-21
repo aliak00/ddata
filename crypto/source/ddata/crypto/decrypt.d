@@ -31,14 +31,38 @@ private string decrypt(ubyte[] data, ubyte[] key, const(EVP_CIPHER)* cipher) @tr
     }
     scope(exit) EVP_CIPHER_CTX_free(ctx);
 
-    EVP_DecryptInit(ctx, cipher, key.ptr, cast(const(ubyte)*)iv.ptr);
+    if (!EVP_DecryptInit(ctx, cipher, key.ptr, cast(const(ubyte)*)iv.ptr)) {
+        throw new Exception("Failed to initialize evp context - %s".format(getLastError));
+    }
 
     ubyte[] buffer = new ubyte[payload.length];
     int updateLength = void;
-    EVP_DecryptUpdate(ctx, buffer.ptr, &updateLength, payload.ptr, cast(int)payload.length);
+    if (!EVP_DecryptUpdate(ctx, buffer.ptr, &updateLength, payload.ptr, cast(int)payload.length)) {
+        throw new Exception("Failed to update evp context - %s".format(getLastError));
+    }
 
     int finalLength = void;
-    EVP_DecryptFinal(ctx, &buffer.ptr[updateLength], &finalLength);
+    if (!EVP_DecryptFinal(ctx, &buffer.ptr[updateLength], &finalLength)) {
+        throw new Exception("Failed to finalize evp context - %s".format(getLastError));
+    }
 
     return cast(string)buffer[0 .. updateLength + finalLength];
+}
+
+@("decryption should handle failure gracefully")
+unittest {
+    import std.exception: collectExceptionMsg;
+    import std.algorithm: canFind;
+    import ddata.crypto: encrypt;
+
+    auto msg = "76d3beec63f0dc9204c3a102d2d3db86200d57cf"
+        .decrypt("some-key", Algorithm.aes128)
+        .collectExceptionMsg;
+    assert(msg.canFind("Failed to finalize evp contex"));
+
+    string password = "some random password";
+    string message = "this is a call to all you people how is this even happening";
+    auto encryptedMessage = encrypt(message, password);
+    auto decryptedMessage = decrypt(encryptedMessage, password);
+    assert(message == decryptedMessage);
 }
