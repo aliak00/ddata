@@ -9,25 +9,26 @@ import ddata.jwt.sign;
 /**
     Encodes a jwt with the current payload and specified algorithm
 */
-public string encode(const ref JSONValue payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
+public string encode(const JSONValue payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
     return encode(cast(ubyte[]) payload.toString().dup, key, algorithm, header);
 }
 
-private string encode(in ubyte[] payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
+private string encode(const(ubyte)[] payload, string key, Algorithm algorithm = Algorithm.hs256, JSONValue header = null) @safe {
     if (header.type == JSONType.null_) {
         header = (JSONValue[string]).init;
     }
     header["alg"] = cast(string) algorithm;
     header["typ"] = "JWT";
+    const headerString = header.toString;
 
-    const string encodedHeader = Base64URLNoPadding.encode(cast(ubyte[]) header.toString().dup);
-    const string encodedPayload = Base64URLNoPadding.encode(payload);
+    const encodedHeader = Base64URLNoPadding.encode(cast(ubyte[])headerString.dup);
+    const encodedPayload = Base64URLNoPadding.encode(payload);
 
-    const string signingInput = encodedHeader ~ "." ~ encodedPayload;
-    const string signatureInput = sign(signingInput, key, algorithm);
-    const string signature = Base64URLNoPadding.encode(cast(ubyte[]) signatureInput.dup);
+    const signingInput = encodedHeader ~ "." ~ encodedPayload;
+    const signatureInput = sign(signingInput.idup, key, algorithm);
+    const signature = Base64URLNoPadding.encode(cast(ubyte[])signatureInput.dup);
 
-    return signingInput ~ "." ~ signature;
+    return (signingInput ~ "." ~ signature).idup;
 }
 
 @("should encode json data in to jwt with private rsa key")
