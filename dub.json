@@ -18,6 +18,20 @@
     ],
     "configurations": [
         {
+            "name": "unittest",
+            "sourcePaths": [
+                "./jwt/",
+                "./crypto/",
+                "./common/"
+            ],
+            "dependencies": {
+                "silly": "*"
+            },
+            "importPaths": [
+                "."
+            ]
+        },
+        {
             "name": "unittest-safe",
             "sourcePaths": [
                 "./jwt/",

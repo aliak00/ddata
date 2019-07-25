@@ -10,4 +10,4 @@ RUN dub upgrade --missing-only && rm source/app.d
 
 COPY . .
 
-RUN dub test --nodeps
+RUN dub test -c unittest-safe --nodeps
