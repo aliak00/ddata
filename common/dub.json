@@ -3,7 +3,7 @@
     "targetType": "library",
     "targetPath": "../bin",
     "dependencies": {
-        "ddash": "~>0.20.1",
+        "ddash": "*",
         "openssl": "*"
     },
     "lflags-osx": [

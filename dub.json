@@ -18,7 +18,7 @@
     ],
     "configurations": [
         {
-            "name": "unittest",
+            "name": "unittest-safe",
             "sourcePaths": [
                 "./jwt/",
                 "./crypto/",
@@ -27,6 +27,7 @@
             "dependencies": {
                 "silly": "*"
             },
+            "dflags": ["-dip1000"],
             "importPaths": [
                 "."
             ]
