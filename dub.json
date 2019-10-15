@@ -24,9 +24,6 @@
                 "./crypto/",
                 "./common/"
             ],
-            "dependencies": {
-                "silly": "*"
-            },
             "importPaths": [
                 "."
             ]
@@ -38,9 +35,6 @@
                 "./crypto/",
                 "./common/"
             ],
-            "dependencies": {
-                "silly": "*"
-            },
             "dflags": ["-dip1000"],
             "importPaths": [
                 "."
